@@ -1,15 +1,21 @@
-import {  createUserWithEmailAndPassword,signInWithEmailAndPassword} from "firebase/auth";
+import {  createUserWithEmailAndPassword,signInWithEmailAndPassword,updateProfile} from "firebase/auth";
 import { CheckValidData } from "../utils/validate";
 import Header from "./Header";
 import { useRef, useState } from "react";
 import {auth} from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
+
 const Login =() =>{
 
     const [isSignInForm,setisSignInForm] = useState(true);
     const [errormessage,seterrormessage] = useState(null);
+    const navigate = useNavigate(null);
     const name = useRef(null);
     const email = useRef(null);
     const password = useRef(null);
+    const dispatch = useDispatch();
     console.log(email);
     const handleButtonClick = () =>{
         //validate the form data
@@ -17,42 +23,63 @@ const Login =() =>{
     seterrormessage(message);
         if(message) return;
 
-        if(!isSignInForm){
-            //Sign Up Form
-    createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
-  .then((userCredential) => {
-    // Signed up 
-    const user = userCredential.user;
-    console.log(user);
-    
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    seterrormessage(errorCode+ errorMessage)
-  });
-        }
-        else{
-            //Sign In
-    signInWithEmailAndPassword(auth, email.current.value, password.current.value)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    console.log(user);
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    seterrormessage(errorCode+"-"+errorMessage)
-  });
-        }
-
-        
-       
-    }
-        const toggleSignInForm=()=>{
-        setisSignInForm(!isSignInForm);
-    };
+        if (!isSignInForm) {
+            // Sign Up Logic
+            createUserWithEmailAndPassword(
+              auth,
+              email.current.value,
+              password.current.value
+            )
+              .then((userCredential) => {
+                const user = userCredential.user;
+                navigate("/browse");
+                updateProfile(user, {
+                  displayName: name.current.value,
+                  photoURL: "https://occ-0-3215-2164.1.nflxso.net/dnm/api/v6/vN7bi_My87NPKvsBoib006Llxzg/AAAABXz4LMjJFidX8MxhZ6qro8PBTjmHbxlaLAbk45W1DXbKsAIOwyHQPiMAuUnF1G24CLi7InJHK4Ge4jkXul1xIW49Dr5S7fc.png?r=e6e"
+                })
+                  .then(() => {
+                    const { uid, email, displayName} = auth.currentUser;
+                    dispatch(
+                      addUser({
+                        uid: uid,
+                        email: email,
+                        displayName: displayName,
+                        photoURL: "https://occ-0-3215-2164.1.nflxso.net/dnm/api/v6/vN7bi_My87NPKvsBoib006Llxzg/AAAABXz4LMjJFidX8MxhZ6qro8PBTjmHbxlaLAbk45W1DXbKsAIOwyHQPiMAuUnF1G24CLi7InJHK4Ge4jkXul1xIW49Dr5S7fc.png?r=e6e"
+                      })
+                    );
+                  })
+                  .catch((error) => {
+                    seterrormessage(error.message);
+                  });
+              })
+              .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                seterrormessage(errorCode + "-" + errorMessage);
+              });
+          } else {
+            // Sign In Logic
+            signInWithEmailAndPassword(
+              auth,
+              email.current.value,
+              password.current.value
+            )
+              .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user;
+                console.log(user);
+                navigate("/browse");
+              })
+              .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                seterrormessage(errorCode + "-" + errorMessage);
+              });
+          }
+        };
+        const toggleSignInForm = () => {
+            setisSignInForm(!isSignInForm);
+          };
  return (
     <div>
         <Header/>
