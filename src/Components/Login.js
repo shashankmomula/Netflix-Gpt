@@ -3,20 +3,19 @@ import { CheckValidData } from "../utils/validate";
 import Header from "./Header";
 import { useRef, useState } from "react";
 import {auth} from "../utils/firebase";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
+import { USER_AVATAR } from "../utils/constants";
 
 const Login =() =>{
 
     const [isSignInForm,setisSignInForm] = useState(true);
     const [errormessage,seterrormessage] = useState(null);
-    const navigate = useNavigate(null);
     const name = useRef(null);
     const email = useRef(null);
     const password = useRef(null);
     const dispatch = useDispatch();
-    console.log(email);
+    
     const handleButtonClick = () =>{
         //validate the form data
     const message = CheckValidData(email.current?.value,password.current?.value,name.current?.value);
@@ -32,10 +31,10 @@ const Login =() =>{
             )
               .then((userCredential) => {
                 const user = userCredential.user;
-                navigate("/browse");
+                // navigate("/browse");
                 updateProfile(user, {
                   displayName: name.current.value,
-                  photoURL: "https://occ-0-3215-2164.1.nflxso.net/dnm/api/v6/vN7bi_My87NPKvsBoib006Llxzg/AAAABXz4LMjJFidX8MxhZ6qro8PBTjmHbxlaLAbk45W1DXbKsAIOwyHQPiMAuUnF1G24CLi7InJHK4Ge4jkXul1xIW49Dr5S7fc.png?r=e6e"
+                  photoURL: {USER_AVATAR}
                 })
                   .then(() => {
                     const { uid, email, displayName} = auth.currentUser;
@@ -67,8 +66,8 @@ const Login =() =>{
               .then((userCredential) => {
                 // Signed in
                 const user = userCredential.user;
-                console.log(user);
-                navigate("/browse");
+                
+                // navigate("/browse");
               })
               .catch((error) => {
                 const errorCode = error.code;
