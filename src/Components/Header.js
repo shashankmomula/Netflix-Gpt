@@ -1,4 +1,4 @@
-import { signOut } from "firebase/auth";
+import {signOut} from "firebase/auth";
 import {auth} from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -7,6 +7,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { addUser,removeUser } from "../utils/userSlice";
 import { LOGO } from "../utils/constants";
+import { toggleGptSearchView } from "../utils/gptSlice";
 
 
 const Header = () =>{
@@ -20,6 +21,9 @@ const Header = () =>{
             navigate("/error")
           });
           
+    };
+    const handleGptSearchClick=()=>{
+        dispatch(toggleGptSearchView());
     };
     useEffect(()=>{
         //checking the authentication and updating tha store
@@ -51,6 +55,8 @@ const Header = () =>{
             alt="logo"/>
             {user && (
             <div className="flex p-2">
+                <button onClick={handleGptSearchClick} className=" bg-blue-800 rounded-lg 
+                 py-2 px-4 my-4 mx-2 text-white" >GPT Search</button>
                 <img 
                 className="w-12 h-12 my-4"
                 alt="User Icon"

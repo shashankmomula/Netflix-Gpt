@@ -29,6 +29,10 @@
 - Update Store with video data
 - Embedded the Youtube video and make it autoplay and mute
 - Tailwind Classes to make main Container look awsome
+- Build Secondary Component
+
+
+
 # Features
 - Login/Sign Up
     - Sign In / Sign Up Form
