@@ -102,8 +102,7 @@ const Login =() =>{
             className="p-4 my-2 w-full bg-gray-700 rounded-md"
         />
 
-        <input ref={password} 
-               type="text" placeholder="Password" className="p-4 my-2 w-full bg-gray-700 rounded-md"
+        <input ref={password} type="password" placeholder="Password" className="p-4 my-2 w-full bg-gray-700 rounded-md"
         />
             <p className="text-red-500">{errormessage}</p>
         <button className="p-4 my-6 bg-red-700 w-full rounded-lg border-white" 
